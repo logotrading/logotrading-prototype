@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Showcase</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Custom font and base styles */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Custom animation for titles and highlights */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .content-fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        /* Transition for the main container and image */
+        #productCard, #productImage {
+            transition: opacity 0.8s ease-in-out;
+        }
+
+        /* AI content loading animation */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .loading-dots span {
+            animation: pulse 1.4s infinite ease-in-out;
+            display: inline-block;
+            margin: 0 2px;
+            width: 8px;
+            height: 8px;
+            background-color: #4b5563; /* gray-600 */
+            border-radius: 50%;
+        }
+        .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+    </style>
+</head>
+<body class="bg-gradient-to-tr from-yellow-200 via-yellow-300 to-yellow-400 min-h-screen flex items-center justify-center p-4">
+
+    <!-- Main Product Card -->
+    <main id="productCard" class="relative container mx-auto max-w-5xl bg-white/40 backdrop-blur-xl border border-white/60 rounded-2xl shadow-2xl shadow-black/10 overflow-hidden text-gray-800">
+        
+        <!-- Company Logo -->
+        <img src="https://placehold.co/150x50/transparent/1f2937?text=Your+Logo&font=raleway" 
+             alt="Company Logo"
+             class="absolute top-6 right-8 w-24 h-auto z-10 opacity-80">
+        
+        <div class="grid grid-cols-1 md:grid-cols-2">
+
+            <!-- Left Column: Product Details -->
+            <div class="p-8 md:p-12 flex flex-col justify-center order-2 md:order-1">
+                <h2 id="product-category" class="text-sm font-bold uppercase tracking-widest text-gray-500">CATEGORY</h2>
+                <h1 id="product-title" class="text-4xl md:text-5xl font-bold text-black mt-2 mb-4">Product Title</h1>
+                <p id="product-description" class="text-gray-700 text-base leading-relaxed mb-6">
+                    Product description will appear here. It will highlight the key features and benefits for the customer.
+                </p>
+
+                <!-- Gemini AI Generated Highlights -->
+                <div id="gemini-section" class="mb-6 min-h-[80px]">
+                    <h3 class="text-gray-800 font-bold mb-3">✨ AI-Generated Highlights</h3>
+                    <div id="gemini-highlights" class="text-gray-600 space-y-1 text-sm">
+                        <!-- AI highlights will be injected here -->
+                    </div>
+                </div>
+
+                <!-- Gemini AI Generated Q&A -->
+                <div id="gemini-qna-section" class="mb-8 min-h-[80px]">
+                    <h3 class="text-gray-800 font-bold mb-3">✨ AI-Powered Q&A</h3>
+                    <div id="gemini-qna" class="text-sm">
+                         <!-- AI Q&A will be injected here -->
+                    </div>
+                </div>
+                
+                <div class="flex items-baseline justify-between mt-auto">
+                    <span id="product-price" class="text-3xl font-bold text-black">$0.00</span>
+                    <div class="flex items-center">
+                         <svg class="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                        <span id="product-rating" class="text-gray-700 ml-1 mr-1">0.0</span>
+                        <span class="text-sm text-gray-500">(<span id="product-review-count">0</span> reviews)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Product Image -->
+            <div class="p-8 flex flex-col items-center justify-center bg-black/5 order-1 md:order-2">
+                <h1 id="product-name" class="text-3xl font-bold text-black mb-6">Product Name</h1>
+                <div class="relative w-full max-w-xs">
+                    <img id="productImage" 
+                         src="https://placehold.co/600x600/111827/ffffff?text=Loading..." 
+                         alt="Product Image"
+                         class="rounded-xl shadow-2xl w-full h-auto object-cover aspect-square">
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Product Data ---
+            const products = [
+                {
+                    category: "SMARTWATCH",
+                    name: "Galaxy Watch 6",
+                    title: "Your Health, Upgraded",
+                    description: "Track your workouts, monitor your sleep, and stay connected with a sleek design and a vibrant, always-on display.",
+                    price: "$349.99",
+                    rating: "4.8",
+                    reviewCount: "1,240",
+                    images: [
+                        'https://images.pexels.com/photos/437037/pexels-photo-437037.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                        'https://images.pexels.com/photos/277406/pexels-photo-277406.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                        'https://images.pexels.com/photos/393047/pexels-photo-393047.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+                    ]
+                },
+                {
+                    category: "HEADPHONES",
+                    name: "Aura ANC",
+                    title: "Silence the World",
+                    description: "Experience industry-leading noise cancellation and immersive, high-fidelity audio. Perfect for travel, work, and focus.",
+                    price: "$399.99",
+                    rating: "4.9",
+                    reviewCount: "8,210",
+                    images: [
+                        'https://images.pexels.com/photos/3780681/pexels-photo-3780681.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                        'https://images.pexels.com/photos/1649771/pexels-photo-1649771.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                        'https://images.pexels.com/photos/205926/pexels-photo-205926.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+                    ]
+                },
+                {
+                    category: "CAMERA",
+                    name: "Lumo Shot Pro",
+                    title: "Capture Every Moment",
+                    description: "A professional-grade mirrorless camera with a 45MP full-frame sensor, 8K video recording, and incredible low-light performance.",
+                    price: "$2,499.00",
+                    rating: "4.9",
+                    reviewCount: "980",
+                    images: [
+                        'https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                        'https://images.pexels.com/photos/3907507/pexels-photo-3907507.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                        'https://images.pexels.com/photos/51383/photo-camera-subject-photographer-51383.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+                    ]
+                },
+                {
+                    category: "SMARTPHONE",
+                    name: "Nebula X1",
+                    title: "Beyond Intelligent",
+                    description: "Featuring a stunning 120Hz display, a revolutionary triple-camera system, and an all-day battery that charges in minutes.",
+                    price: "$1,199.00",
+                    rating: "4.7",
+                    reviewCount: "4,550",
+                    images: [
+                        'https://images.pexels.com/photos/1092644/pexels-photo-1092644.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                        'https://images.pexels.com/photos/47261/pexels-photo-47261.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                        'https://images.pexels.com/photos/699122/pexels-photo-699122.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+                    ]
+                },
+                {
+                    category: "LAPTOP",
+                    name: "BladeBook Air",
+                    title: "Power Meets Elegance",
+                    description: "An ultralight powerhouse with the latest generation processor, a brilliant Retina display, and a silent, fanless design.",
+                    price: "$1,499.00",
+                    rating: "4.8",
+                    reviewCount: "2,100",
+                    images: [
+                        'https://images.pexels.com/photos/18105/pexels-photo.jpg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                        'https://images.pexels.com/photos/2047905/pexels-photo-2047905.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                        'https://images.pexels.com/photos/2528118/pexels-photo-2528118.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+                    ]
+                },
+                {
+                    category: "GAMING CONSOLE",
+                    name: "Odyssey G9",
+                    title: "Next-Gen Gaming",
+                    description: "Experience lightning-fast loading with an ultra-high-speed SSD, deeper immersion with support for haptic feedback, and 3D Audio.",
+                    price: "$499.99",
+                    rating: "4.9",
+                    reviewCount: "15,300",
+                    images: [
+                        'https://images.pexels.com/photos/442576/pexels-photo-442576.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                        'https://images.pexels.com/photos/1390361/pexels-photo-1390361.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                        'https://images.pexels.com/photos/3165335/pexels-photo-3165335.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+                    ]
+                },
+                {
+                    category: "DRONE",
+                    name: "Aero-4K",
+                    title: "See the World Differently",
+                    description: "A compact yet powerful drone with a 4K HDR camera, 30-minute flight time, and intelligent obstacle avoidance.",
+                    price: "$899.00",
+                    rating: "4.7",
+                    reviewCount: "1,800",
+                    images: [
+                        'https://images.pexels.com/photos/1034654/pexels-photo-1034654.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                        'https://images.pexels.com/photos/3358707/pexels-photo-3358707.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                        'https://images.pexels.com/photos/3618531/pexels-photo-3618531.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+                    ]
+                },
+                {
+                    category: "VR HEADSET",
+                    name: "Portal VR 2",
+                    title: "Enter New Realities",
+                    description: "The next evolution of virtual reality with stunning graphics, intuitive controls, and a vast library of immersive games and experiences.",
+                    price: "$549.99",
+                    rating: "4.8",
+                    reviewCount: "3,500",
+                    images: [
+                        'https://images.pexels.com/photos/8064432/pexels-photo-8064432.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                        'https://images.pexels.com/photos/8387737/pexels-photo-8387737.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                        'https://images.pexels.com/photos/5083490/pexels-photo-5083490.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+                    ]
+                },
+                {
+                    category: "TABLET",
+                    name: "Tabula Pro",
+                    title: "Creativity Unleashed",
+                    description: "A versatile tablet with a stunning Liquid-XDR display, powerful M2 chip, and support for the Pro Pencil for artists and note-takers.",
+                    price: "$799.00",
+                    rating: "4.9",
+                    reviewCount: "6,700",
+                    images: [
+                        'https://images.pexels.com/photos/221185/pexels-photo-221185.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                        'https://images.pexels.com/photos/1334597/pexels-photo-1334597.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                        'https://images.pexels.com/photos/415570/pexels-photo-415570.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+                    ]
+                },
+                {
+                    category: "SPEAKER",
+                    name: "SoundSphere 360",
+                    title: "Room-Filling Sound",
+                    description: "A smart speaker that delivers immersive 360-degree audio, with built-in voice assistant and multi-room music capabilities.",
+                    price: "$299.00",
+                    rating: "4.7",
+                    reviewCount: "5,400",
+                    images: [
+                        'https://images.pexels.com/photos/3587478/pexels-photo-3587478.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                        'https://images.pexels.com/photos/1279813/pexels-photo-1279813.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+                        'https://images.pexels.com/photos/3825586/pexels-photo-3825586.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
+                    ]
+                }
+            ];
+
+            // --- DOM Elements ---
+            const productCard = document.getElementById('productCard');
+            const categoryElem = document.getElementById('product-category');
+            const titleElem = document.getElementById('product-title');
+            const descriptionElem = document.getElementById('product-description');
+            const priceElem = document.getElementById('product-price');
+            const ratingElem = document.getElementById('product-rating');
+            const reviewCountElem = document.getElementById('product-review-count');
+            const nameElem = document.getElementById('product-name');
+            const imageElem = document.getElementById('productImage');
+            const geminiHighlightsElem = document.getElementById('gemini-highlights');
+            const geminiQnaElem = document.getElementById('gemini-qna');
+
+            // --- Logic ---
+            let currentProductIndex = -1;
+            let currentImageIndex = 0;
+            let imageInterval;
+            
+            const loadingIndicator = `<div class="loading-dots"><span></span><span></span><span></span></div>`;
+
+            // --- Generic Gemini API Caller ---
+            async function callGemini(prompt) {
+                const chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+                const payload = { contents: chatHistory };
+                const apiKey = ""; // API key is handled by the environment
+                // Changed model to gemini-pro to fix the 401 error.
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) throw new Error(`API response not OK (${response.status})`);
+                
+                const result = await response.json();
+                const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                if (!text) throw new Error('No valid content in API response');
+                
+                return text;
+            }
+
+
+            // --- Feature-specific Gemini Functions ---
+            async function fetchGeminiHighlights(product) {
+                geminiHighlightsElem.innerHTML = loadingIndicator;
+                const prompt = `For a product named "${product.name}" with the description "${product.description}", generate three short, exciting marketing bullet points for an in-store TV display. Use an asterisk (*) as the bullet point. Example: * Feature 1 * Feature 2 * Feature 3`;
+                
+                try {
+                    const highlightsText = await callGemini(prompt);
+                    const highlights = highlightsText.split('*').filter(s => s.trim() !== '');
+                    
+                    geminiHighlightsElem.innerHTML = ''; // Clear loading dots
+                    highlights.forEach(highlight => {
+                        const p = document.createElement('p');
+                        p.textContent = `• ${highlight.trim()}`;
+                        p.className = 'content-fade-in';
+                        geminiHighlightsElem.appendChild(p);
+                    });
+                } catch (error) {
+                    console.error("Gemini Highlights Error:", error);
+                    geminiHighlightsElem.innerHTML = ''; // Hide on error
+                }
+            }
+
+            async function fetchGeminiQnA(product) {
+                geminiQnaElem.innerHTML = loadingIndicator;
+                const prompt = `For a product named "${product.name}" with the description "${product.description}", generate one common customer question and a helpful, concise answer. Format your response exactly like this, with no extra text: Q: [Your generated question]? A: [Your generated answer].`;
+
+                try {
+                    const qnaText = await callGemini(prompt);
+                    const qnaParts = qnaText.match(/Q: (.*)\? A: (.*)/s);
+
+                    if (qnaParts && qnaParts.length === 3) {
+                        const question = qnaParts[1].trim();
+                        const answer = qnaParts[2].trim();
+
+                        geminiQnaElem.innerHTML = `
+                            <p class="font-bold text-gray-700 content-fade-in">Q: ${question}?</p>
+                            <p class="text-gray-600 content-fade-in">A: ${answer}</p>
+                        `;
+                    } else {
+                         throw new Error('Q&A format incorrect');
+                    }
+                } catch (error) {
+                    console.error("Gemini Q&A Error:", error);
+                    geminiQnaElem.innerHTML = ''; // Hide on error
+                }
+            }
+
+
+            function displayProduct() {
+                productCard.style.opacity = '0';
+                setTimeout(() => {
+                    currentProductIndex = (currentProductIndex + 1) % products.length;
+                    const product = products[currentProductIndex];
+                    currentImageIndex = 0;
+
+                    categoryElem.textContent = product.category;
+                    titleElem.textContent = product.title;
+                    descriptionElem.textContent = product.description;
+                    priceElem.textContent = product.price;
+                    ratingElem.textContent = product.rating;
+                    reviewCountElem.textContent = product.reviewCount;
+                    nameElem.textContent = product.name;
+                    imageElem.src = product.images[currentImageIndex];
+
+                    // Trigger both Gemini API calls
+                    fetchGeminiHighlights(product);
+                    fetchGeminiQnA(product);
+
+                    [categoryElem, titleElem, descriptionElem, priceElem, nameElem].forEach(el => {
+                        el.classList.remove('content-fade-in');
+                        void el.offsetWidth;
+                        el.classList.add('content-fade-in');
+                    });
+                    
+                    productCard.style.opacity = '1';
+                    clearInterval(imageInterval);
+                    imageInterval = setInterval(changeImageForProduct, 4000);
+
+                }, 800);
+            }
+
+            function changeImageForProduct() {
+                const product = products[currentProductIndex];
+                if (!product) return;
+                currentImageIndex = (currentImageIndex + 1) % product.images.length;
+                imageElem.style.opacity = '0';
+                setTimeout(() => {
+                    imageElem.src = product.images[currentImageIndex];
+                    imageElem.style.opacity = '1';
+                }, 800);
+            }
+            
+            displayProduct();
+            setInterval(displayProduct, 15000);
+        });
+    </script>
+
+</body>
+</html>
