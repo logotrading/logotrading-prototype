@@ -430,7 +430,7 @@
                         </div>
                         <div id="photoUploads">
                             <div class="mb-3 photo-upload">
-                                <label class="block text-sm font-medium text-gray-700 mb-1">1. Container back side view</label>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">1. Container inside  view</label>
                                 <input type="file" accept="image/*" class="w-full" name="photo[]" required />
                             </div>
                             <div class="mb-3 photo-upload">
@@ -704,7 +704,7 @@
     function resetPhotoUploads() {
         photoUploads.innerHTML = `
             <div class="mb-3 photo-upload">
-                <label class="block text-sm font-medium text-gray-700 mb-1">1. Container back side view</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">1. Container  inside view</label>
                 <input type="file" accept="image/*" class="w-full" name="photo[]" required />
             </div>
             <div class="mb-3 photo-upload">
@@ -726,26 +726,7 @@
     }
 
     // Validation on submit
-    document.getElementById('finishOrderForm').onsubmit = function(e) {
-        e.preventDefault();
-        // Validate first 4 photo fields
-        const photoInputs = photoUploads.querySelectorAll('input[type="file"]');
-        let valid = true;
-        for (let i = 0; i < 4; i++) {
-            if (!photoInputs[i] || !photoInputs[i].files.length) {
-                valid = false;
-                break;
-            }
-        }
-        if (!valid) {
-            photoError.textContent = "Please upload all 4 required photos before finishing the order.";
-            photoError.classList.remove('hidden');
-            return false;
-        }
-        photoError.classList.add('hidden');
-        photoError.textContent = '';
-        // ...rest of your existing submit logic...
-    };
+ 
 
     // Fullscreen image viewer logic
     const imageViewerModal = document.getElementById('imageViewerModal');
