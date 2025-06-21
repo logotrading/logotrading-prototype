@@ -25,12 +25,29 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
         }
+        @media (max-width: 640px) {
+            .sidebar {
+                position: fixed;
+                z-index: 50;
+                left: -100%;
+                top: 0;
+                height: 100%;
+                width: 16rem;
+                transition: left 0.3s;
+            }
+            .sidebar.open {
+                left: 0;
+            }
+            .sidebar-backdrop {
+                display: block;
+            }
+        }
     </style>
 </head>
 <body class="bg-gray-100">
-    <div class="flex h-screen bg-white">
+    <div class="flex flex-col sm:flex-row min-h-screen bg-white">
         <!-- Sidebar -->
-        <aside class="w-64 flex-shrink-0 bg-white border-r border-gray-200 flex flex-col">
+        <div class="sidebar bg-white border-r border-gray-200 flex flex-col h-full overflow-y-auto w-64 sm:static sm:left-0 sm:block hidden sm:flex">
             <!-- Logo/Header -->
             <div class="h-16 flex items-center justify-center border-b border-gray-200">
                 <h1 class="text-2xl font-bold text-gray-800">Your Logo</h1>
@@ -75,7 +92,7 @@
                         </a>
                     </li>
                     <li class="px-4 py-2 bg-teal-500 rounded-lg mx-2">
-                        <a href="index.html" class="flex items-center text-white rounded-lg p-2"></a>
+                        <a href="index.html" class="flex items-center text-white rounded-lg p-2">
                             <i class="fas fa-box w-6 text-center"></i>
                             <span class="ml-3 font-semibold">Sales Order</span>
                         </a>
@@ -87,7 +104,7 @@
                         </a>
                     </li>
                     <li class="px-4 py-2">
-                        <a href="customers.html" class="flex items-center text-gray-600 hover:bg-gray-100 hover:text-gray-800 rounded-lg p-2 transition-colors duration-200"></a>
+                        <a href="customers.html" class="flex items-center text-gray-600 hover:bg-gray-100 hover:text-gray-800 rounded-lg p-2 transition-colors duration-200">
                             <i class="fas fa-shipping-fast w-6 text-center"></i>
                             <span class="ml-3">customers</span>
                         </a>
@@ -123,13 +140,18 @@
                     <span class="ml-3">Logout</span>
                 </a>
             </div>
-        </aside>
+        </div>
+        <!-- Sidebar mobile toggle button -->
+        <button id="sidebarToggle" class="sm:hidden fixed top-4 left-4 z-50 bg-white border rounded-full p-2 shadow-lg">
+            <i class="fas fa-bars text-xl text-gray-700"></i>
+        </button>
+        <div id="sidebarBackdrop" class="sidebar-backdrop fixed inset-0 bg-black bg-opacity-40 z-40 hidden"></div>
 
         <!-- Main Content -->
-        <main class="flex-1 flex flex-col bg-gray-50">
+        <main class="flex-1 flex flex-col bg-gray-50 min-h-screen">
             <!-- Header -->
-            <header class="bg-white border-b border-gray-200 h-16 flex items-center justify-between px-6">
-                <h2 class="text-xl font-semibold text-gray-700">Sales Orders</h2>
+            <header class="bg-white border-b border-gray-200 h-16 flex items-center justify-between px-4 sm:px-6">
+                <h2 class="text-lg sm:text-xl font-semibold text-gray-700">Sales Orders</h2>
                 <div class="flex items-center space-x-4">
                     <button class="text-gray-500 hover:text-gray-700">
                         <i class="fas fa-expand fa-lg"></i>
@@ -141,10 +163,10 @@
             </header>
 
             <!-- Content Body -->
-            <div class="p-6 flex-1 overflow-y-auto">
-                <div class="w-full max-w-full bg-white rounded-lg shadow p-4 sm:p-6 mx-auto">
+            <div class="p-2 sm:p-6 flex-1 overflow-y-auto">
+                <div class="w-full max-w-full bg-white rounded-lg shadow p-2 sm:p-6 mx-auto">
                     <!-- Filter/Search Section -->
-                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4 flex-wrap">
                         <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                             <input
                                 id="orderSearch"
@@ -168,16 +190,18 @@
                         </button>
                     </div>
                     <div class="w-full overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
+                        <table class="min-w-full divide-y divide-gray-200 text-xs sm:text-sm">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">ID</th>
-                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Customer Name</th>
-                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Order Date</th>
-                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Truck Number</th>
-                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Remark</th>
-                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Status</th>
-                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase whitespace-nowrap">Action</th>
+                                    <th class="px-2 sm:px-4 py-2 text-left font-medium text-gray-500 uppercase whitespace-nowrap">ID</th>
+                                    <th class="px-2 sm:px-4 py-2 text-left font-medium text-gray-500 uppercase whitespace-nowrap">Customer Name</th>
+                                    <th class="px-2 sm:px-4 py-2 text-left font-medium text-gray-500 uppercase whitespace-nowrap">Order Date</th>
+                                    <th class="px-2 sm:px-4 py-2 text-left font-medium text-gray-500 uppercase whitespace-nowrap">Truck Number</th>
+                                    <th class="px-2 sm:px-4 py-2 text-left font-medium text-gray-500 uppercase whitespace-nowrap">Remark</th>
+                                    <th class="px-2 sm:px-4 py-2 text-left font-medium text-gray-500 uppercase whitespace-nowrap">Status</th>
+                                    <th class="px-2 sm:px-4 py-2 text-left font-medium text-gray-500 uppercase whitespace-nowrap">Finished By</th>
+                                    <th class="px-2 sm:px-4 py-2 text-left font-medium text-gray-500 uppercase whitespace-nowrap">Related Documents</th>
+                                    <th class="px-2 sm:px-4 py-2 text-left font-medium text-gray-500 uppercase whitespace-nowrap">Action</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-100">
@@ -190,6 +214,10 @@
                                     <td class="px-4 py-2 whitespace-nowrap">
                                         <span class="inline-block px-2 py-1 text-xs font-semibold rounded bg-yellow-100 text-yellow-700">In Progress</span>
                                     </td>
+                                    <td class="px-4 py-2 whitespace-nowrap finished-by"></td>
+                                    <td class="px-4 py-2 whitespace-nowrap">
+                                        <button class="related-docs-btn text-blue-500 hover:text-blue-700 underline" style="display:none;">View</button>
+                                    </td>
                                     <td class="px-4 py-2 flex space-x-2 whitespace-nowrap">
                                         <a href="dbai-data.html" title="View" class="text-green-500 hover:text-green-700">
                                             <i class="fas fa-eye"></i>
@@ -197,6 +225,13 @@
                                         <button title="Edit" class="text-blue-500 hover:text-blue-700"><i class="fas fa-edit"></i></button>
                                         <button title="Delete" class="text-red-500 hover:text-red-700"><i class="fas fa-trash"></i></button>
                                         <button title="Scan Data" class="text-teal-500 hover:text-teal-700"><i class="fas fa-barcode"></i></button>
+                                        <button 
+                                            title="Finish" 
+                                            class="text-purple-500 hover:text-purple-700 finish-btn"
+                                            style="display: inline;"
+                                        >
+                                            <i class="fas fa-flag-checkered"></i>
+                                        </button>
                                     </td>
                                 </tr>
                                 <tr>
@@ -207,6 +242,10 @@
                                     <td class="px-4 py-2 whitespace-nowrap">Handle with care</td>
                                     <td class="px-4 py-2 whitespace-nowrap">
                                         <span class="inline-block px-2 py-1 text-xs font-semibold rounded bg-green-100 text-green-700">Finish</span>
+                                    </td>
+                                    <td class="px-4 py-2 whitespace-nowrap finished-by">Alice</td>
+                                    <td class="px-4 py-2 whitespace-nowrap">
+                                        <button class="related-docs-btn text-blue-500 hover:text-blue-700 underline">View</button>
                                     </td>
                                     <td class="px-4 py-2 flex space-x-2 whitespace-nowrap">
                                         <a href="dbai-data.html" title="View" class="text-green-500 hover:text-green-700">
@@ -226,6 +265,10 @@
                                     <td class="px-4 py-2 whitespace-nowrap">
                                         <span class="inline-block px-2 py-1 text-xs font-semibold rounded bg-yellow-100 text-yellow-700">In Progress</span>
                                     </td>
+                                    <td class="px-4 py-2 whitespace-nowrap finished-by"></td>
+                                    <td class="px-4 py-2 whitespace-nowrap">
+                                        <button class="related-docs-btn text-blue-500 hover:text-blue-700 underline" style="display:none;">View</button>
+                                    </td>
                                     <td class="px-4 py-2 flex space-x-2 whitespace-nowrap">
                                         <a href="dbai-data.html" title="View" class="text-green-500 hover:text-green-700">
                                             <i class="fas fa-eye"></i>
@@ -243,6 +286,10 @@
                                     <td class="px-4 py-2 whitespace-nowrap">Expo event</td>
                                     <td class="px-4 py-2 whitespace-nowrap">
                                         <span class="inline-block px-2 py-1 text-xs font-semibold rounded bg-green-100 text-green-700">Finish</span>
+                                    </td>
+                                    <td class="px-4 py-2 whitespace-nowrap finished-by">Bob</td>
+                                    <td class="px-4 py-2 whitespace-nowrap">
+                                        <button class="related-docs-btn text-blue-500 hover:text-blue-700 underline">View</button>
                                     </td>
                                     <td class="px-4 py-2 flex space-x-2 whitespace-nowrap">
                                         <a href="dbai-data.html" title="View" class="text-green-500 hover:text-green-700">
@@ -262,6 +309,10 @@
                                     <td class="px-4 py-2 whitespace-nowrap">
                                         <span class="inline-block px-2 py-1 text-xs font-semibold rounded bg-yellow-100 text-yellow-700">In Progress</span>
                                     </td>
+                                    <td class="px-4 py-2 whitespace-nowrap finished-by"></td>
+                                    <td class="px-4 py-2 whitespace-nowrap">
+                                        <button class="related-docs-btn text-blue-500 hover:text-blue-700 underline" style="display:none;">View</button>
+                                    </td>
                                     <td class="px-4 py-2 flex space-x-2 whitespace-nowrap">
                                         <a href="dbai-data.html" title="View" class="text-green-500 hover:text-green-700">
                                             <i class="fas fa-eye"></i>
@@ -280,6 +331,10 @@
                                     <td class="px-4 py-2 whitespace-nowrap">
                                         <span class="inline-block px-2 py-1 text-xs font-semibold rounded bg-green-100 text-green-700">Finish</span>
                                     </td>
+                                    <td class="px-4 py-2 whitespace-nowrap finished-by">Charlie</td>
+                                    <td class="px-4 py-2 whitespace-nowrap">
+                                        <button class="related-docs-btn text-blue-500 hover:text-blue-700 underline">View</button>
+                                    </td>
                                     <td class="px-4 py-2 flex space-x-2 whitespace-nowrap">
                                         <a href="dbai-data.html" title="View" class="text-green-500 hover:text-green-700">
                                             <i class="fas fa-eye"></i>
@@ -296,8 +351,8 @@
             </div>
 
             <!-- Modal -->
-            <div id="orderModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
-                <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+            <div id="orderModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden px-2">
+                <div class="bg-white rounded-lg shadow-lg p-4 sm:p-6 w-full max-w-md sm:max-w-lg">
                     <div class="flex justify-between items-center mb-4">
                         <h4 class="text-lg font-semibold">Create New Order</h4>
                         <button id="closeModalBtn" class="text-gray-500 hover:text-gray-700 text-xl">&times;</button>
@@ -328,57 +383,10 @@
                     </form>
                 </div>
             </div>
-            <script>
-                // Example customer data with IDs
-                const customers = [
-                    { id: 1, name: "John Doe", address: "123 Main St, City" },
-                    { id: 2, name: "Jane Smith", address: "456 Oak Ave, Town" },
-                    { id: 3, name: "Ali Hassan", address: "789 Palm Rd, Village" },
-                    { id: 4, name: "City Pop Up Dubai", address: "Expo Center, Dubai" },
-                    { id: 5, name: "Netherland", address: "Amsterdam, NL" },
-                    { id: 6, name: "Doel", address: "Riverbank, Doel" }
-                ];
-
-                const customerInput = document.getElementById('customerInput');
-                const suggestionsBox = document.getElementById('customerSuggestions');
-
-                customerInput.addEventListener('input', function() {
-                    const value = this.value.trim().toLowerCase();
-                    suggestionsBox.innerHTML = '';
-                    if (!value) {
-                        suggestionsBox.classList.add('hidden');
-                        return;
-                    }
-                    const matches = customers.filter(c => c.name.toLowerCase().includes(value));
-                    if (matches.length === 0) {
-                        suggestionsBox.classList.add('hidden');
-                        return;
-                    }
-                    matches.forEach(c => {
-                        const li = document.createElement('li');
-                        li.className = 'px-3 py-2 hover:bg-gray-100 cursor-pointer flex flex-col';
-                        li.innerHTML = `<span class="font-medium">${c.name}</span>
-                            <span class="text-xs text-gray-500">ID: ${c.id} &nbsp; | &nbsp; Add: ${c.address}</span>`;
-                        li.onclick = function() {
-                            customerInput.value = c.name;
-                            suggestionsBox.classList.add('hidden');
-                        };
-                        suggestionsBox.appendChild(li);
-                    });
-                    suggestionsBox.classList.remove('hidden');
-                });
-
-                // Hide suggestions when clicking outside
-                document.addEventListener('click', function(e) {
-                    if (!customerInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
-                        suggestionsBox.classList.add('hidden');
-                    }
-                });
-            </script>
 
             <!-- Edit Order Modal -->
-            <div id="editOrderModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
-                <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+            <div id="editOrderModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden px-2">
+                <div class="bg-white rounded-lg shadow-lg p-4 sm:p-6 w-full max-w-md sm:max-w-lg">
                     <div class="flex justify-between items-center mb-4">
                         <h4 class="text-lg font-semibold">Edit Order</h4>
                         <button id="closeEditModalBtn" class="text-gray-500 hover:text-gray-700 text-xl">&times;</button>
@@ -407,11 +415,83 @@
                     </form>
                 </div>
             </div>
+
+            <!-- Finish Modal -->
+            <div id="finishModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden px-2">
+                <div class="bg-white rounded-lg shadow-lg p-4 sm:p-6 w-full max-w-md sm:max-w-lg">
+                    <div class="flex justify-between items-center mb-4">
+                        <h4 class="text-lg font-semibold">Finish Order</h4>
+                        <button id="closeFinishModalBtn" class="text-gray-500 hover:text-gray-700 text-xl">&times;</button>
+                    </div>
+                    <form id="finishOrderForm">
+                        <div class="mb-3">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Responsible Person Name</label>
+                            <input type="text" id="finishPerson" class="w-full border border-gray-300 rounded px-3 py-2" placeholder="Enter name" required />
+                        </div>
+                        <div id="photoUploads">
+                            <div class="mb-3 photo-upload">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">1. Container back side view</label>
+                                <input type="file" accept="image/*" class="w-full" name="photo[]" required />
+                            </div>
+                            <div class="mb-3 photo-upload">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">2. Container closed back side view</label>
+                                <input type="file" accept="image/*" class="w-full" name="photo[]" required />
+                            </div>
+                            <div class="mb-3 photo-upload">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">3. Photo of sealed number image</label>
+                                <input type="file" accept="image/*" class="w-full" name="photo[]" required />
+                            </div>
+                            <div class="mb-3 photo-upload">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">4. Plates total weight summary</label>
+                                <input type="file" accept="image/*" class="w-full" name="photo[]" required />
+                            </div>
+                        </div>
+                        <button type="button" id="addPhotoBtn" class="mb-3 bg-gray-200 text-gray-700 px-3 py-1 rounded hover:bg-gray-300 transition w-full">
+                            Add Another Photo
+                        </button>
+                        <div id="photoError" class="text-red-500 text-sm mb-2 hidden"></div>
+                        <button type="submit" class="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600 transition w-full">Finish</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Related Documents Modal -->
+            <div id="relatedDocsModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden px-2">
+                <div class="bg-white rounded-lg shadow-lg p-4 sm:p-6 w-full max-w-lg">
+                    <div class="flex justify-between items-center mb-4">
+                        <h4 class="text-lg font-semibold">Related Documents</h4>
+                        <button id="closeRelatedDocsModalBtn" class="text-gray-500 hover:text-gray-700 text-xl">&times;</button>
+                    </div>
+                    <div id="relatedDocsContent" class="grid grid-cols-2 gap-4"></div>
+                </div>
+            </div>
+
+            <!-- Fullscreen Image Viewer Modal -->
+            <div id="imageViewerModal" class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 hidden px-2">
+                <img id="imageViewerImg" src="" alt="Full View" class="max-w-full max-h-full rounded shadow-lg border-4 border-white" />
+                <button id="closeImageViewerBtn" class="absolute top-4 right-8 text-white text-3xl font-bold">&times;</button>
+            </div>
         </main>
     </div>
 </body>
-</html>
 <script>
+    // Sidebar mobile toggle logic
+    const sidebar = document.querySelector('.sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+    sidebarToggle.onclick = function() {
+        sidebar.classList.toggle('open');
+        sidebarBackdrop.classList.toggle('hidden');
+    };
+    sidebarBackdrop.onclick = function() {
+        sidebar.classList.remove('open');
+        sidebarBackdrop.classList.add('hidden');
+    };
+    // Show sidebar by default on desktop
+    if (window.innerWidth >= 640) {
+        sidebar.classList.remove('hidden');
+    }
+
     // Modal open/close logic
     document.getElementById('addOrderBtn').onclick = function() {
         document.getElementById('orderModal').classList.remove('hidden');
@@ -438,6 +518,119 @@
     });
     document.getElementById('closeEditModalBtn').onclick = function() {
         document.getElementById('editOrderModal').classList.add('hidden');
+    };
+
+    // Store finish data in memory (demo only)
+    const finishData = {};
+
+    // Show/hide Finish button based on status
+    document.querySelectorAll('tbody tr').forEach(row => {
+        const statusCell = row.querySelectorAll('td')[5];
+        const finishBtn = row.querySelector('.finish-btn');
+        if (statusCell && finishBtn) {
+            if (statusCell.innerText.trim().toLowerCase().includes('progress')) {
+                finishBtn.style.display = 'inline';
+            } else {
+                finishBtn.style.display = 'none';
+            }
+        }
+    });
+
+    // Finish modal logic
+    let currentFinishRow = null;
+    let currentOrderId = null;
+    document.querySelectorAll('.finish-btn').forEach(btn => {
+        btn.onclick = function() {
+            currentFinishRow = btn.closest('tr');
+            currentOrderId = currentFinishRow.querySelector('td').innerText.trim();
+            document.getElementById('finishModal').classList.remove('hidden');
+            resetPhotoUploads();
+        };
+    });
+    document.getElementById('closeFinishModalBtn').onclick = function() {
+        document.getElementById('finishModal').classList.add('hidden');
+        resetPhotoUploads();
+    };
+
+    // Handle finish form submit (demo: just update status in table and store data)
+    document.getElementById('finishOrderForm').onsubmit = function(e) {
+        e.preventDefault();
+        // Validate first 4 photo fields
+        const photoInputs = photoUploads.querySelectorAll('input[type="file"]');
+        let valid = true;
+        for (let i = 0; i < 4; i++) {
+            if (!photoInputs[i] || !photoInputs[i].files.length) {
+                valid = false;
+                break;
+            }
+        }
+        if (!valid) {
+            photoError.textContent = "Please upload all 4 required photos before finishing the order.";
+            photoError.classList.remove('hidden');
+            return false;
+        }
+        photoError.classList.add('hidden');
+        photoError.textContent = '';
+
+        // --- The rest of your submit logic ---
+        if (currentFinishRow) {
+            // Update status cell
+            const statusCell = currentFinishRow.querySelectorAll('td')[5];
+            statusCell.innerHTML = '<span class="inline-block px-2 py-1 text-xs font-semibold rounded bg-green-100 text-green-700">Finish</span>';
+            // Hide finish button
+            const finishBtn = currentFinishRow.querySelector('.finish-btn');
+            if (finishBtn) finishBtn.style.display = 'none';
+
+            // Get finished by name
+            const finishedBy = document.getElementById('finishPerson').value;
+            currentFinishRow.querySelector('.finished-by').innerText = finishedBy;
+
+            // Get photos
+            const files = Array.from(photoUploads.querySelectorAll('input[type="file"]')).map(input => input.files[0]);
+            finishData[currentOrderId] = {
+                finishedBy,
+                photos: files.filter(f => f)
+            };
+
+            // Show related docs button if photos exist
+            const relatedBtn = currentFinishRow.querySelector('.related-docs-btn');
+            if (relatedBtn && finishData[currentOrderId].photos.length > 0) {
+                relatedBtn.style.display = 'inline';
+            }
+        }
+        document.getElementById('finishModal').classList.add('hidden');
+        resetPhotoUploads();
+        this.reset();
+    };
+
+    // Related Documents modal logic
+    let currentDocsOrderId = null;
+    document.querySelectorAll('.related-docs-btn').forEach(btn => {
+        btn.onclick = function() {
+            const row = btn.closest('tr');
+            currentDocsOrderId = row.querySelector('td').innerText.trim();
+            const docs = finishData[currentDocsOrderId]?.photos || [];
+            const content = document.getElementById('relatedDocsContent');
+            content.innerHTML = '';
+            if (docs.length === 0) {
+                content.innerHTML = '<div class="col-span-2 text-gray-500">No documents attached.</div>';
+            } else {
+                docs.forEach((file, idx) => {
+                    const url = URL.createObjectURL(file);
+                    content.innerHTML += `
+                        <div>
+                            <img src="${url}" alt="Photo ${idx+1}" class="w-full h-32 object-cover rounded mb-2 cursor-pointer related-doc-img" data-img-url="${url}" />
+                            <div class="text-xs text-center">Photo ${idx+1}</div>
+                        </div>`;
+                });
+            }
+            document.getElementById('relatedDocsModal').classList.remove('hidden');
+        };
+    });
+    document.getElementById('closeRelatedDocsModalBtn').onclick = function() {
+        document.getElementById('relatedDocsModal').classList.add('hidden');
+        // Clean up object URLs
+        document.getElementById('relatedDocsContent').querySelectorAll('img').forEach(img => URL.revokeObjectURL(img.src));
     };
 
     // Table filter logic
@@ -490,4 +683,132 @@
     searchInput.addEventListener('input', filterTable);
     filterProgress.addEventListener('change', filterTable);
     filterFinish.addEventListener('change', filterTable);
+
+    // Dynamic photo upload logic for Finish Modal
+    const photoUploads = document.getElementById('photoUploads');
+    const addPhotoBtn = document.getElementById('addPhotoBtn');
+    const photoError = document.getElementById('photoError');
+    let photoCount = 4;
+
+    addPhotoBtn.onclick = function() {
+        photoCount++;
+        const div = document.createElement('div');
+        div.className = 'mb-3 photo-upload';
+        div.innerHTML = `
+            <label class="block text-sm font-medium text-gray-700 mb-1">${photoCount}. Additional photo</label>
+            <input type="file" accept="image/*" class="w-full" name="photo[]" />
+        `;
+        photoUploads.appendChild(div);
+    };
+
+    function resetPhotoUploads() {
+        photoUploads.innerHTML = `
+            <div class="mb-3 photo-upload">
+                <label class="block text-sm font-medium text-gray-700 mb-1">1. Container back side view</label>
+                <input type="file" accept="image/*" class="w-full" name="photo[]" required />
+            </div>
+            <div class="mb-3 photo-upload">
+                <label class="block text-sm font-medium text-gray-700 mb-1">2. Container closed back side view</label>
+                <input type="file" accept="image/*" class="w-full" name="photo[]" required />
+            </div>
+            <div class="mb-3 photo-upload">
+                <label class="block text-sm font-medium text-gray-700 mb-1">3. Photo of sealed number image</label>
+                <input type="file" accept="image/*" class="w-full" name="photo[]" required />
+            </div>
+            <div class="mb-3 photo-upload">
+                <label class="block text-sm font-medium text-gray-700 mb-1">4. Plates total weight summary</label>
+                <input type="file" accept="image/*" class="w-full" name="photo[]" required />
+            </div>
+        `;
+        photoCount = 4;
+        photoError.classList.add('hidden');
+        photoError.textContent = '';
+    }
+
+    // Validation on submit
+    document.getElementById('finishOrderForm').onsubmit = function(e) {
+        e.preventDefault();
+        // Validate first 4 photo fields
+        const photoInputs = photoUploads.querySelectorAll('input[type="file"]');
+        let valid = true;
+        for (let i = 0; i < 4; i++) {
+            if (!photoInputs[i] || !photoInputs[i].files.length) {
+                valid = false;
+                break;
+            }
+        }
+        if (!valid) {
+            photoError.textContent = "Please upload all 4 required photos before finishing the order.";
+            photoError.classList.remove('hidden');
+            return false;
+        }
+        photoError.classList.add('hidden');
+        photoError.textContent = '';
+        // ...rest of your existing submit logic...
+    };
+
+    // Fullscreen image viewer logic
+    const imageViewerModal = document.getElementById('imageViewerModal');
+    const imageViewerImg = document.getElementById('imageViewerImg');
+    const closeImageViewerBtn = document.getElementById('closeImageViewerBtn');
+
+    document.getElementById('relatedDocsContent').onclick = function(e) {
+        if (e.target.classList.contains('related-doc-img')) {
+            imageViewerImg.src = e.target.getAttribute('data-img-url');
+            imageViewerModal.classList.remove('hidden');
+        }
+    };
+    closeImageViewerBtn.onclick = function() {
+        imageViewerModal.classList.add('hidden');
+        imageViewerImg.src = '';
+    };
+    imageViewerModal.onclick = function(e) {
+        if (e.target === imageViewerModal) {
+            imageViewerModal.classList.add('hidden');
+            imageViewerImg.src = '';
+        }
+    };
+
+    // Customer autocomplete logic (unchanged)
+    const customers = [
+        { id: 1, name: "John Doe", address: "123 Main St, City" },
+        { id: 2, name: "Jane Smith", address: "456 Oak Ave, Town" },
+        { id: 3, name: "Ali Hassan", address: "789 Palm Rd, Village" },
+        { id: 4, name: "City Pop Up Dubai", address: "Expo Center, Dubai" },
+        { id: 5, name: "Netherland", address: "Amsterdam, NL" },
+        { id: 6, name: "Doel", address: "Riverbank, Doel" }
+    ];
+    const customerInput = document.getElementById('customerInput');
+    const suggestionsBox = document.getElementById('customerSuggestions');
+    customerInput.addEventListener('input', function() {
+        const value = this.value.trim().toLowerCase();
+        suggestionsBox.innerHTML = '';
+        if (!value) {
+            suggestionsBox.classList.add('hidden');
+            return;
+        }
+        const matches = customers.filter(c => c.name.toLowerCase().includes(value));
+        if (matches.length === 0) {
+            suggestionsBox.classList.add('hidden');
+            return;
+        }
+        matches.forEach(c => {
+            const li = document.createElement('li');
+            li.className = 'px-3 py-2 hover:bg-gray-100 cursor-pointer flex flex-col';
+            li.innerHTML = `<span class="font-medium">${c.name}</span>
+                <span class="text-xs text-gray-500">ID: ${c.id} &nbsp; | &nbsp; Add: ${c.address}</span>`;
+            li.onclick = function() {
+                customerInput.value = c.name;
+                suggestionsBox.classList.add('hidden');
+            };
+            suggestionsBox.appendChild(li);
+        });
+        suggestionsBox.classList.remove('hidden');
+    });
+    document.addEventListener('click', function(e) {
+        if (!customerInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+            suggestionsBox.classList.add('hidden');
+        }
+    });
 </script>
+</html>
